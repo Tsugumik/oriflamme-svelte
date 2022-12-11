@@ -1,0 +1,1 @@
+export type playercolortype = "red" | "gray" | "yellow" | "blue" | "green";
