@@ -1,0 +1,1 @@
+export type PlayerPermissionPacket = {status: number};

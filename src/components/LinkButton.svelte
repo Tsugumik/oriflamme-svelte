@@ -14,13 +14,13 @@
         cursor: pointer;
         color: black;
         text-decoration: none;
-        background: lightgray;
-        border: black 1px solid;
+        background: #DDDDDD;
+        border: #555555 2px solid;
         transition: background 0.5s ease;
         cursor: pointer;border-radius: 0.5rem;
         font-family: 'Merriweather', serif;
         &:hover {
-            background: gray;
+            background:#8C8C8C;
         }
     }
 </style>

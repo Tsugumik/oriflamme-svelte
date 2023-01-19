@@ -2,15 +2,28 @@
     import type IGameEntity from "../../entities/IGameEntity";
     import InfoButton from "./InfoButton.svelte";
     import type { playercolortype } from "../../types/playerTypes";
+    import { onMount } from "svelte";
+    import { CardId } from "../../entities/CardsUtils";
     export let card: IGameEntity;
     export let playercolor: playercolortype = "yellow";
     let visible: boolean = true;
+    export let onTable: boolean;
+    export let ownerId: string;
+    let revealBlock = false;
     async function revealCard() {
-        visible=!visible;
+        if(onTable && !revealBlock) {
+            visible=!visible;
+        }
     }
+    onMount(async()=>{
+        if(card.id==CardId.UNKNOWN) {
+            visible = false;
+            revealBlock = true;
+        }
+    });
 </script>
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<div class="card" class:visible draggable="true" on:click={revealCard}>
+<div class="card" class:visible draggable={!onTable} on:click={revealCard}>
     <div class="card-inner">
       <div class="card-front {playercolor}">
         <img src="./icons/svelte.svg" alt="svelte logo">
@@ -18,7 +31,7 @@
       <div class="card-back {playercolor}">
         <h2>{card.name} <InfoButton/></h2>
         <div class="img">
-            <img src={card.image_url} alt="">
+            <img src={card.imageUrl} alt="">
         </div>
         <div class="details">
             <p>{card.details}</p>
@@ -31,7 +44,7 @@
     .card {
         font-family: 'Merriweather', serif;
         background-color: transparent;
-        width: 250px;
+        min-width: 250px;
         height: 400px;
         perspective: 1000px;
         margin: 1rem;

@@ -1,52 +1,99 @@
 <script lang="ts">
     import type { Socket } from "socket.io-client";
-    import Message from "../../types/Message";
+    import type { Message } from "../../types/Message";
     import { gameState } from "../../types/gameState";
-    import { fade } from 'svelte/transition';
+    import { onMount } from "svelte";
     
     export let globalSocket: Socket;
     export let gameStatus: gameState;
+    export let apiUrl: string;
+    export let playerId: string;
     let message: string = "";
-    let messages = new Array<Message | any>();
-    async function sendMessage(event: SubmitEvent) {
-        event.preventDefault();
-        globalSocket.emit("chat-message", message);
-        message = "";
+    let messages = new Array<Message>();
+    
+    let audiosrc: string;
+
+    $: messages, setTimeout(async()=>{await scrollToBottom()});
+
+    let ul: HTMLUListElement;
+    let chat: HTMLDivElement;
+    let audio: HTMLAudioElement;
+
+    async function sendMessage() {
+        fetch(`${apiUrl}/api/chat`, {
+            method: "PUT",
+            headers: { 'Content-Type': 'application/json', 'Authorization': globalSocket.id},
+            body: JSON.stringify({message: message})
+        }).then(async ()=>{
+            message = "";
+        });
     }
 
-    if(globalSocket) {
-        globalSocket.emit("chat-sync");
-        globalSocket.on("chat-sync-response", packet=>{
-            const parsedPacket: Array<any> = JSON.parse(packet);
-            parsedPacket.forEach(msgpacketobj => {
-                const msgObject = new Message(msgpacketobj.message, msgpacketobj.sender, msgpacketobj.time);
-                messages = [...messages, msgObject];
-            });
+    async function syncChat(firstSync?: boolean) {
+        const REQUEST = await fetch(`${apiUrl}/api/chat`, {
+            headers: {
+                "Authorization": globalSocket.id
+            }
         });
-        globalSocket.on("new-message", msgpacket=>{
-            const msgpacketobj: any = JSON.parse(msgpacket);
-            const msgObject = new Message(msgpacketobj.message, msgpacketobj.sender, msgpacketobj.time);
-            messages = [...messages, msgObject];
+        const REQUEST_OBJ = await REQUEST.json();
+        messages = REQUEST_OBJ;
+        if(messages.length > 0) {
+            if(!firstSync && (messages[messages.length - 1].senderid != playerId && messages[messages.length - 1].senderid != "Server")) {
+                audiosrc="/sounds/new_message.mp3";
+                audio.load();
+                setTimeout(async () => {
+                    await audio.play();
+                }, 150);
+            }
+        }
+    }
+
+    onMount(async ()=>{
+        
+        globalSocket.on("chat-sync", syncChat);
+
+        globalSocket.on("server_sound", async()=>{
+            audiosrc="/sounds/new_server_message.mp3";
+            setTimeout(async () => {
+                audio.load();
+                await audio.play();
+            }, 150);
         });
+
+        await syncChat(true);
+    });
+
+    async function getPlayerName(maxLen: number, name: string) {
+        if(name.length < maxLen) return name;
+        return `${name.slice(0, maxLen-1)}...`;
+    }
+
+    async function scrollToBottom() {
+        if(ul){
+            ul.scroll({top: ul.scrollHeight, behavior: 'smooth'});
+        }
     }
     
 </script>
 
-{#if gameStatus == gameState.PLAYING}
-    <div class="chat">
-        <ul>
+{#if gameStatus == gameState.PLAYING || gameStatus == gameState.LOBBY}
+    <div class="chat" bind:this={chat}>
+        <audio src={audiosrc} bind:this={audio}/>
+        <ul bind:this={ul}>
             {#each messages as msg}
-                <li class="message">
+                <li class="message sender-{msg.senderid}">
                     <div class="send-details">
-                        <div class="sender">{msg.sender}:</div>
+                        {#await getPlayerName(20, msg.sender) then name}
+                        <div class="sender">{name}:</div>
+                        {/await}
                     </div>
                     <p class="content">
-                        {msg.msgcontent}
+                        {msg.message}
                     </p>
                 </li>
             {/each}
         </ul>
-        <form on:submit={sendMessage}>
+        <form on:submit|preventDefault={sendMessage}>
             <input autocomplete="off" required type="text" name="message" id="message" bind:value={message} maxlength="100">
             <button type="submit">Send</button>
         </form>
@@ -78,6 +125,9 @@
                 gap: 1rem;
                 margin: 1rem;
                 align-items: center;
+                .content {
+                    overflow-wrap: anywhere;
+                }
                 .send-details {
                     display: flex;
                     justify-content: c;
@@ -88,6 +138,9 @@
                         padding: 0.5rem;
                     }
                 }
+            }
+            li.message.sender-Server {
+                border-bottom: gold 2px solid;
             }
         }
         form {

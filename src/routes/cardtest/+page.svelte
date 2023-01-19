@@ -31,7 +31,7 @@
 <main>
     <div class="cards">
         {#each cards as card}
-            <Card card={card} playercolor={playercolor}/>
+            <Card card={card} playercolor={playercolor} ownerId="unknown" onTable={false}/>
         {/each}
     </div>
     <div class="testSection">

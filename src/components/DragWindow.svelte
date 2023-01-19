@@ -5,18 +5,28 @@
 	let moving = false;
 	let zindex = 10;
 	let visible: boolean = false;
-	function onMouseDown() {
+	async function onMouseDown() {
 		moving = true;
 	}
 	
-	function onMouseMove(e: MouseEvent) {
+	async function onMouseMove(e: MouseEvent) {
 		if (moving) {
 			left += e.movementX;
 			top += e.movementY;
 		}
 	}
+
+	async function zindexPlus() {
+		zindex++;
+	}
+
+	async function zindexMinus() {
+		if(zindex>10) {
+			zindex--;
+		}
+	}
 	
-	function onMouseUp() {
+	async function onMouseUp() {
 		moving = false;
 	}
 </script>
@@ -26,7 +36,11 @@
 <section style="left: {left}px; top: {top}px; z-index: {zindex};" class="window" class:visible>
 	<div class="moveHeader" on:mousedown={onMouseDown}>
 		<div class="window-name">{windowname}</div>
-		<button class="hide" class:visible on:click={()=>{visible=false}}>&#128469;&#xFE0E;</button>
+		<div class="buttonHolder">
+			<button class="hide" class:visible on:click={()=>{visible=false}}>&#128469;&#xFE0E;</button>
+			<button class="zindexplus" on:click={zindexPlus}>&#9547;</button>
+			<button class="zindexminus" on:click={zindexMinus}>&ndash;</button>
+		</div>
 	</div>
 	<div class="slot">
 		<slot/>
@@ -60,7 +74,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            .hide {
+            .buttonHolder button {
                 font-size: 1.5rem;
 				background: white;
 				border: none;
@@ -68,6 +82,7 @@
                 cursor: pointer;
 				width: min-content;
 				border-radius: 1rem;
+				font-weight: bold;
             }
 			.window-name {
 				margin: 1rem;

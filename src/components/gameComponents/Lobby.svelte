@@ -1,29 +1,31 @@
 <script lang="ts">
     import type { Socket } from "socket.io-client";
     import type { PlayerSyncPacket } from "src/types/PlayerSyncPacket";
-    import { gameState } from "../../types/gameState";
-    import Button from "../Button.svelte";
+    import { onMount } from "svelte";
+    import DisconnectButton from "../DisconnectButton.svelte";
     export let globalSocket: Socket;
-    export let gameStatus: gameState;
-
+    export let apiUrl: string;
     let lobby: Array<PlayerSyncPacket> = new Array<PlayerSyncPacket>();
 
-    async function disconnect(event: SubmitEvent) {
-        event.preventDefault();
-        if(globalSocket) {
-            gameStatus = gameState.CONNECT;
-            globalSocket.close();
-        }
+    async function syncLobby() {
+        let query = await fetch(`${apiUrl}/api/lobby`, {
+            "headers": {
+                "Authorization": globalSocket.id
+            }
+        });
+        lobby = await query.json();
     }
 
-    globalSocket.emit("request-player-sync");
+    globalSocket.on("lobby-sync", syncLobby);
 
-    globalSocket.on("player-sync", message =>{
-        const PACKET: Array<PlayerSyncPacket> = JSON.parse(message);
-        lobby = PACKET;
+    onMount(async ()=>{
+        await syncLobby();
     });
 
-    
+    async function getPlayerName(maxLen: number, name: string) {
+        if(name.length < maxLen) return name;
+        return `${name.slice(0, maxLen-1)}...`;
+    }
 
 </script>
 
@@ -34,14 +36,15 @@
     {#each lobby as player}
         <div class="playerInfo {player.color}-player-bg">
             <div class="details">
-                <div class="username">{player.name} <div class="connected-{player.connectionStatus}"></div></div>
+                {#await getPlayerName(20, player.name) then name}
+                    <div class="username">{name} 
+                    <div class="connected-{player.connectionStatus}"></div></div>
+                {/await}
             </div>
         </div>
     {/each}
     
-    <form on:submit={(e)=>{disconnect(e)}}>
-        <Button value="Disconnect"/>
-    </form>
+    <DisconnectButton globalSocket={globalSocket}/>
 </div>
 
 <style lang="scss">
