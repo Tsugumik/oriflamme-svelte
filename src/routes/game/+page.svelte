@@ -51,7 +51,11 @@
         globalSocket = io(apiUrl);
 
         globalSocket.on("connect", async ()=>{
-            globalSocket.emit("player-create", JSON.stringify({name: userName, id: connectionId}));
+            if(reconnect) {
+                globalSocket.emit("player-create", JSON.stringify({name: userName, id: connectionId}));
+            } else {
+                globalSocket.emit("player-create", JSON.stringify({name: userName, id: ""}));
+            }
         });
 
         globalSocket.on("connection-accept", async msg=>{

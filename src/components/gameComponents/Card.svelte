@@ -6,9 +6,10 @@
     import { CardId } from "../../entities/CardsUtils";
     export let card: IGameEntity;
     export let playercolor: playercolortype = "yellow";
+    export let playerId: string;
     let visible: boolean = true;
     export let onTable: boolean;
-    export let ownerId: string;
+    let own: boolean = false;
     let revealBlock = false;
     async function revealCard() {
         if(onTable && !revealBlock) {
@@ -20,10 +21,14 @@
             visible = false;
             revealBlock = true;
         }
+
+        if(playerId==card.ownerId) {
+            own = true;
+        }
     });
 </script>
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<div class="card" class:visible draggable={!onTable} on:click={revealCard}>
+<div class="card" class:visible class:own draggable={!onTable} on:click={revealCard}>
     <div class="card-inner">
       <div class="card-front {playercolor}">
         <img src="./icons/svelte.svg" alt="svelte logo">
@@ -48,7 +53,9 @@
         height: 400px;
         perspective: 1000px;
         margin: 1rem;
-        cursor: grab;
+        &.own {
+            cursor: grab;
+        }
     }
 
     .card-inner {

@@ -58,12 +58,12 @@
 <div id="game">
     <div id="table">
     {#each TABLE as card}
-        <Card card={card} playercolor={card.color} onTable={true} ownerId={card.ownerId}/>
+        <Card card={card} playercolor={card.color} onTable={true} playerId={playerId}/>
     {/each}
     </div>
     <div id="hand">
     {#each HAND as card}
-        <Card card={card} playercolor={playerColor} onTable={false} ownerId={playerId}/>
+        <Card card={card} playercolor={playerColor} onTable={false} playerId={playerId}/>
     {/each}
     </div>
     
