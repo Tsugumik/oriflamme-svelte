@@ -4,6 +4,7 @@
 	export let windowname: string;
 	let moving = false;
 	let zindex = 10;
+	let opacity = 100;
 	let visible: boolean = false;
 	async function onMouseDown() {
 		moving = true;
@@ -25,7 +26,19 @@
 			zindex--;
 		}
 	}
+
+	async function opacityPlus() {
+		if(opacity<100) {
+			opacity+=10;
+		}
+	}
 	
+	async function opacityMinus() {
+		if(opacity>50) {
+			opacity-=10;
+		}
+	}
+
 	async function onMouseUp() {
 		moving = false;
 	}
@@ -33,13 +46,15 @@
 
 <button class="show" class:visible on:click={()=>{visible=true}}>{windowname}</button>
 
-<section style="left: {left}px; top: {top}px; z-index: {zindex};" class="window" class:visible>
+<section style="left: {left}px; top: {top}px; z-index: {zindex}; opacity: {opacity}%;" class="window" class:visible>
 	<div class="moveHeader" on:mousedown={onMouseDown}>
 		<div class="window-name">{windowname}</div>
 		<div class="buttonHolder">
-			<button class="hide" class:visible on:click={()=>{visible=false}}>&#128469;&#xFE0E;</button>
-			<button class="zindexplus" on:click={zindexPlus}>&#9547;</button>
-			<button class="zindexminus" on:click={zindexMinus}>&ndash;</button>
+			<button class="hide" class:visible on:click={()=>{visible=false}}>H</button>
+			<button class="zindexplus" on:click={zindexPlus}>Z+</button>
+			<button class="zindexminus" on:click={zindexMinus}>Z-</button>
+			<button class="opacityplus" on:click={opacityPlus}>O+</button>
+			<button class="opacityminus" on:click={opacityMinus}>O-</button>
 		</div>
 	</div>
 	<div class="slot">
