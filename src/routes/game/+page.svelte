@@ -11,6 +11,7 @@
     import Settings from "../../components/gameComponents/Settings.svelte";
     import { onMount, onDestroy } from "svelte";
     import Game from "../../components/Game.svelte";
+    import YoutubePlayer from "../../components/gameComponents/YoutubePlayer.svelte";
     let gameStatus: gameState = gameState.CONNECT;
 
     // Form Data +
@@ -43,8 +44,6 @@
     let globalSocket: Socket;
     let error: boolean = false;
     let latestError: ErrorPacket;
-    
-    console.log("HELLO");
 
     async function connect() {
         gameStatus = gameState.CONNECTING;
@@ -192,7 +191,6 @@
     {/if}
     {#if gameStatus == gameState.PLAYING || gameStatus == gameState.LOBBY}
     <DragWindowsContainer>
-        
             <DragWindow windowname="Chat">
                 <Chat globalSocket={globalSocket} gameStatus={gameStatus} apiUrl={apiUrl} playerId={playerId}/>
             </DragWindow>
@@ -203,6 +201,10 @@
 
             <DragWindow windowname="Lobby">
                 <Lobby globalSocket={globalSocket} apiUrl={apiUrl}/>
+            </DragWindow>
+
+            <DragWindow windowname="Youtube Player" reRenderButton={true}>
+                <YoutubePlayer />
             </DragWindow>
     </DragWindowsContainer>
     {/if}

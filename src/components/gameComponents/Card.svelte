@@ -12,7 +12,7 @@
     let own: boolean = false;
     let revealBlock = false;
     async function revealCard() {
-        if(onTable && !revealBlock) {
+        if(onTable && !revealBlock && own) {
             visible=!visible;
         }
     }

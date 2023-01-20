@@ -2,10 +2,12 @@
 	export let left = -500;
 	export let top = -500;
 	export let windowname: string;
+	export let reRenderButton: boolean = false;
 	let moving = false;
 	let zindex = 10;
 	let opacity = 100;
 	let visible: boolean = false;
+	let rr: boolean = true;
 	async function onMouseDown() {
 		moving = true;
 	}
@@ -42,30 +44,38 @@
 	async function onMouseUp() {
 		moving = false;
 	}
+
+	async function reRender() {
+		rr = false;
+		setTimeout(async () => {
+			rr = true;	
+		});
+	}
 </script>
 
 <button class="show" class:visible on:click={()=>{visible=true}}>{windowname}</button>
 
-<section style="left: {left}px; top: {top}px; z-index: {zindex}; opacity: {opacity}%;" class="window" class:visible>
-	<div class="moveHeader" on:mousedown={onMouseDown}>
-		<div class="window-name">{windowname}</div>
-		<div class="buttonHolder">
-			<button class="hide" class:visible on:click={()=>{visible=false}}>H</button>
-			<button class="zindexplus" on:click={zindexPlus}>Z+</button>
-			<button class="zindexminus" on:click={zindexMinus}>Z-</button>
-			<button class="opacityplus" on:click={opacityPlus}>O+</button>
-			<button class="opacityminus" on:click={opacityMinus}>O-</button>
+
+	<section style="left: {left}px; top: {top}px; z-index: {zindex}; opacity: {opacity}%;" class="window" class:visible>
+		<div class="moveHeader" on:mousedown={onMouseDown}>
+			<div class="window-name">{windowname}</div>
+			<div class="buttonHolder">
+				<button class="hide" class:visible on:click={()=>{visible=false}}>H</button>
+				<button class="zindexplus" on:click={zindexPlus}>Z+</button>
+				<button class="zindexminus" on:click={zindexMinus}>Z-</button>
+				<button class="opacityplus" on:click={opacityPlus}>O+</button>
+				<button class="opacityminus" on:click={opacityMinus}>O-</button>
+				{#if reRenderButton}
+					<button class="rerender" on:click={reRender}>RR</button>
+				{/if}
+			</div>
 		</div>
-	</div>
-	<div class="slot">
-		<slot/>
-	</div>
-</section>
-
-
-
-
-
+		{#if rr}
+			<div class="slot">
+				<slot/>
+		</div>
+		{/if}
+	</section>
 
 <svelte:window on:mouseup={onMouseUp} on:mousemove={onMouseMove} />
 
