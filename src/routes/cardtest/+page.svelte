@@ -13,25 +13,25 @@
     import Assasination from "../../entities/Assassination";
     import Conspiracy from "../../entities/Conspiracy";
     import type { playercolortype } from "../../types/playerTypes";
-    let playercolor: playercolortype;
+    let playercolor: playercolortype = "red";
     const cards = new Array<IGameEntity>(
-        new Knight(),
-        new Archer(),
-        new Heir(),
-        new Spy(),
-        new RoyalDecree(),
-        new Lord(),
-        new Impostor(),
-        new Ambush(),
-        new Assasination(),
-        new Conspiracy(), 
+        new Knight("UNKNOWN", playercolor),
+        new Archer("UNKNOWN", playercolor),
+        new Heir("UNKNOWN", playercolor),
+        new Spy("UNKNOWN", playercolor),
+        new RoyalDecree("UNKNOWN", playercolor),
+        new Lord("UNKNOWN", playercolor),
+        new Impostor("UNKNOWN", playercolor),
+        new Ambush("UNKNOWN", playercolor),
+        new Assasination("UNKNOWN", playercolor),
+        new Conspiracy("UNKNOWN", playercolor), 
     );
 </script>
 
 <main>
     <div class="cards">
         {#each cards as card}
-            <Card card={card} playercolor={playercolor} ownerId="unknown" onTable={false}/>
+            <Card card={card} playercolor={playercolor} onTable={false} playerId="UNKNOWN"/>
         {/each}
     </div>
     <div class="testSection">

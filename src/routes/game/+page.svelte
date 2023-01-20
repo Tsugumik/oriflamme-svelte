@@ -44,6 +44,8 @@
     let error: boolean = false;
     let latestError: ErrorPacket;
     
+    console.log("HELLO");
+
     async function connect() {
         gameStatus = gameState.CONNECTING;
         apiUrl = `${apiProtocol}${webSocketIp}:${webSocketPort}`
