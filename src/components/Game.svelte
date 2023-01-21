@@ -7,6 +7,7 @@
     import Card from "./gameComponents/Card.svelte";
     import type { playercolortype } from "src/types/playerTypes";
     import type { TableSyncObject } from "src/types/TableSyncObject";
+    import CardSlot from "./gameComponents/CardSlot.svelte";
     export let gameStatus: gameState;
     export let apiUrl: string;
     export let globalSocket: Socket;
@@ -57,8 +58,10 @@
 
 <div id="game">
     <div id="table">
-    {#each TABLE as card}
+        <CardSlot index={0}/>
+    {#each TABLE as card, index}
         <Card card={card} playercolor={card.color} onTable={true} playerId={playerId}/>
+        <CardSlot index={index+1}/>
     {/each}
     </div>
     <div id="hand">

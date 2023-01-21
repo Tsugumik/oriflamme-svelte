@@ -191,19 +191,19 @@
     {/if}
     {#if gameStatus == gameState.PLAYING || gameStatus == gameState.LOBBY}
     <DragWindowsContainer>
-            <DragWindow windowname="Chat">
+            <DragWindow windowname="Chat" iconSrc="/icons/apps/chat.png">
                 <Chat globalSocket={globalSocket} gameStatus={gameStatus} apiUrl={apiUrl} playerId={playerId}/>
             </DragWindow>
             
-            <DragWindow windowname="Settings">
+            <DragWindow windowname="Settings" iconSrc="/icons/apps/settings.png">
                 <Settings globalSocket={globalSocket} gameStatus={gameStatus} apiUrl={apiUrl}/>
             </DragWindow>
 
-            <DragWindow windowname="Lobby">
+            <DragWindow windowname="Lobby" iconSrc="/icons/apps/lobby.png">
                 <Lobby globalSocket={globalSocket} apiUrl={apiUrl}/>
             </DragWindow>
 
-            <DragWindow windowname="Youtube Player" reRenderButton={true}>
+            <DragWindow windowname="Youtube Player" reRenderButton={true} iconSrc="/icons/apps/ytPlayer.png">
                 <YoutubePlayer />
             </DragWindow>
     </DragWindowsContainer>

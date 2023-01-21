@@ -1,21 +1,33 @@
 <script lang="ts">
 	export let left = -500;
-	export let top = -500;
+	export let top = 0;
 	export let windowname: string;
 	export let reRenderButton: boolean = false;
+	export let iconSrc: string;
 	let moving = false;
 	let zindex = 10;
 	let opacity = 100;
 	let visible: boolean = false;
 	let rr: boolean = true;
+
 	async function onMouseDown() {
 		moving = true;
 	}
 	
 	async function onMouseMove(e: MouseEvent) {
 		if (moving) {
-			left += e.movementX;
-			top += e.movementY;
+			if(top >= 0 && top <= window.innerHeight && left <= 0 && left >= -window.innerWidth - 200) {
+				left += e.movementX;
+				top += e.movementY;	
+			} else if (top < 0) {
+				top = 0;
+			} else if (top > window.innerHeight) {
+				top = window.innerHeight - 100;
+			} else if (left > 0) {
+				left = -20;
+			} else if (left < -window.innerWidth - 200) {
+				left = -window.innerWidth + 20;
+			}
 		}
 	}
 
@@ -53,7 +65,7 @@
 	}
 </script>
 
-<button class="show" class:visible on:click={()=>{visible=true}}>{windowname}</button>
+<button class="show" class:visible on:click={()=>{visible=true}}><img src={iconSrc} alt="{windowname} icon"></button>
 
 
 	<section style="left: {left}px; top: {top}px; z-index: {zindex}; opacity: {opacity}%;" class="window" class:visible>
@@ -81,9 +93,9 @@
 
 <style lang="scss">
 	.window.visible {
-		-webkit-box-shadow: 8px 8px 24px 0px rgba(66, 68, 90, 1);
-		-moz-box-shadow: 8px 8px 24px 0px rgba(66, 68, 90, 1);
-		box-shadow: 8px 8px 24px 0px rgba(66, 68, 90, 1);
+		-webkit-box-shadow: 8px 8px 24px 0px black;
+		-moz-box-shadow: 8px 8px 24px 0px black;
+		box-shadow: 8px 8px 24px 0px black;
 		user-select: none;
 		border: solid 2px black;
 		position: absolute;
@@ -123,12 +135,22 @@
 	}
 	.show {
 		font-size: 1.6rem;
-		margin: 1rem;
-		padding: 0.5rem;
 		cursor: pointer;
 		visibility: visible;
+		background: rgb(212, 211, 211);
+		border-bottom: none;
+		border-left: none;
+		border-right: none;
+		border-top: 1px solid black;
+		height: 50px;
+		width: 100%;
+		img {
+			width: 70%;
+			object-fit: cover;
+		}
 	}
 	.show.visible {
+		display: none;
 		visibility: hidden;
 	}
 </style>
