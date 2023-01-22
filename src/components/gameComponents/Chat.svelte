@@ -142,6 +142,9 @@
             li.message.sender-Server {
                 border-bottom: gold 2px solid;
             }
+            li.message.sender-Server_error {
+                border-bottom: red 2px solid;
+            }
         }
         form {
             height: 10%;
