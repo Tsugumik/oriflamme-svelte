@@ -137,7 +137,7 @@
 		font-size: 1.6rem;
 		cursor: pointer;
 		visibility: visible;
-		background: rgb(212, 211, 211);
+		background: white;
 		border-bottom: none;
 		border-left: none;
 		border-right: none;
@@ -145,12 +145,12 @@
 		height: 50px;
 		width: 100%;
 		img {
-			width: 70%;
+			width: 35px;
+			height: 35px;
 			object-fit: cover;
 		}
 	}
 	.show.visible {
 		display: none;
-		visibility: hidden;
 	}
 </style>

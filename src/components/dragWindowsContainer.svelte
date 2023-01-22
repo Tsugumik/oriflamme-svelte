@@ -8,7 +8,7 @@
         right: 0;
         bottom: 0;
         background: #71797E;
-        border: 2px solid black;
+        border-left: 1px solid black;
         display: flex;
         justify-content: center;
         align-items: stretch;
