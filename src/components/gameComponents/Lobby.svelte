@@ -34,7 +34,7 @@
         {lobby.length} / 5
     </div>
     {#each lobby as player}
-        <div class="playerInfo {player.color}-player-bg">
+        <div class="playerInfo {player.color}-player-bg {player.active ? 'active': ''}">
             <div class="details">
                 {#await getPlayerName(20, player.name) then name}
                     <div class="username">{name} 
@@ -59,6 +59,9 @@
             border-radius: 1rem;
             display: grid;
             margin: 1rem 0 1rem 0;
+            &.active {
+                border: 2px solid green;
+            }
             .color {
                 width: 100px;
                 height: 100px;
