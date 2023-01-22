@@ -12,6 +12,7 @@
     import { onMount, onDestroy } from "svelte";
     import Game from "../../components/Game.svelte";
     import YoutubePlayer from "../../components/gameComponents/YoutubePlayer.svelte";
+    import GameInfo from "../../components/gameComponents/GameInfo.svelte";
     let gameStatus: gameState = gameState.CONNECT;
 
     // Form Data +
@@ -137,6 +138,10 @@
 
 </script>
 
+<svelte:head>
+    <title>Game</title>
+</svelte:head>
+
 <main>
     {#if gameStatus != gameState.PLAYING && gameStatus != gameState.LOBBY}
         <div class="banner STATUS-{gameStatus}" class:error>            
@@ -205,6 +210,10 @@
 
             <DragWindow windowname="Youtube Player" reRenderButton={true} iconSrc="/icons/apps/ytPlayer.png">
                 <YoutubePlayer />
+            </DragWindow>
+
+            <DragWindow windowname="Info" iconSrc="/icons/apps/info.png">
+                <GameInfo />
             </DragWindow>
     </DragWindowsContainer>
     {/if}

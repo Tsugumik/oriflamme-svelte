@@ -28,6 +28,10 @@
     );
 </script>
 
+<svelte:head>
+    <title>Card test</title>
+</svelte:head>
+
 <main>
     <div class="cards">
         {#each cards as card}
