@@ -18,7 +18,23 @@
     let HAND: Array<IGameEntity> = new Array<IGameEntity>();
 
     onMount(async ()=>{
+        const COLOR_REQUEST = await fetch(`${apiUrl}/api/game/color`, {
+            headers: {
+                "Authorization": globalSocket.id
+            }
+        });
+
+        const COLOR_DATA = await COLOR_REQUEST.json();
+
+        playerColor = COLOR_DATA.color;
+
+        await syncCards();
         
+        globalSocket.on("cards_sync", syncCards);
+
+    });
+
+    async function syncCards() {
         const HAND_REQUEST = await fetch(`${apiUrl}/api/game/hand`, {
             headers: {
                 "Authorization": globalSocket.id
@@ -33,6 +49,9 @@
 
         const HAND_DATA: Array<CardId> = await HAND_REQUEST.json();
         const TABLE_DATA: Array<TableSyncObject> = await TABLE_REQUEST.json();
+        
+        HAND = [];
+        TABLE = [];
 
         HAND_DATA.forEach(async cardId=>{
             HAND = [...HAND, new CardsConstructors[cardId](playerId, playerColor)];
@@ -41,27 +60,16 @@
         TABLE_DATA.forEach(async card=>{
             TABLE = [...TABLE, new CardsConstructors[card.id](card.ownerId, card.color)];
         });
-
-        const COLOR_REQUEST = await fetch(`${apiUrl}/api/game/color`, {
-            headers: {
-                "Authorization": globalSocket.id
-            }
-        });
-
-        const COLOR_DATA = await COLOR_REQUEST.json();
-
-        playerColor = COLOR_DATA.color;
-
-    });
+    }
 
 </script>
 
 <div id="game">
     <div id="table">
-        <CardSlot index={0}/>
+        <CardSlot index={0} apiUrl={apiUrl} globalSocket={globalSocket}/>
     {#each TABLE as card, index}
         <Card card={card} playercolor={card.color} onTable={true} playerId={playerId}/>
-        <CardSlot index={index+1}/>
+        <CardSlot index={index+1} apiUrl={apiUrl} globalSocket={globalSocket}/>
     {/each}
     </div>
     <div id="hand">
@@ -106,9 +114,6 @@
                 border-radius: 6px;
                 border: 3px solid #CFD8DC;
             }
-        }
-        #table {
-            justify-content: safe center;
         }
     }
 </style>

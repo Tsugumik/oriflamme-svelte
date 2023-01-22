@@ -26,15 +26,19 @@
             own = true;
         }
     });
+    async function dragStart(event: DragEvent) {
+        //console.log(JSON.stringify(card));
+        event.dataTransfer?.setData('text', card.id.toString());
+    }
 </script>
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<div class="card" class:visible class:own draggable={!onTable} on:click={revealCard}>
+<div class="card" class:visible class:own draggable={!onTable} on:click={revealCard} on:dragstart={dragStart}>
     <div class="card-inner">
       <div class="card-front {playercolor}">
         <img src="./icons/svelte.svg" alt="svelte logo">
       </div>
       <div class="card-back {playercolor}">
-        <h2>{card.name} <InfoButton/></h2>
+        <h2>{card.name}</h2>
         <div class="img">
             <img src={card.imageUrl} alt="">
         </div>
