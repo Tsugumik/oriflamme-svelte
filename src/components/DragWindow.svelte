@@ -1,6 +1,6 @@
 <script lang="ts">
-	export let left = -500;
-	export let top = 0;
+	let left = -500;
+	let top = 0;
 	export let windowname: string;
 	export let reRenderButton: boolean = false;
 	export let iconSrc: string;
